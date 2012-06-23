@@ -33,18 +33,51 @@ var english = new Array();
 
 function initExt(event)
 {   
-chrome.extension.sendRequest({text: "tamilKeySelLang"}, function(response) {
-  kbmode = response.text;
-});
-
+	chrome.extension.sendRequest({text: "tamilKeySelLang"}, function(response) {
+	  kbmode = response.text;
+	});
 }
 
 window.addEventListener("load",initExt,true);
 window.addEventListener("click",initExt,true);
 
-window.addEventListener("keypress",convertThis,false);
+
+window.addEventListener("keydown",isHotKeyPressed,false);
+window.addEventListener("keyup",isHotKeyPressed,false);
+
 window.addEventListener("keydown",toggleKBMode,false);
 
+//window.addEventListener("keypress",convertThis,false);
+//document.addEventListener("keydown",toggleKBMode);
+window.captureEvents(Event.KEYDOWN); 
+window.captureEvents(Event.KEYUP); 
+
+
+
+var inputElements = document.getElementsByTagName('input');
+var textAreas = document.getElementsByTagName('textarea');
+
+for(var i=0;i<inputElements.length;i++) {
+	var obj = inputElements[i];
+	if(obj.type == "text") {		
+		obj.addEventListener("focus",onElementFocus,false);
+		obj.addEventListener("blur",onElementBlur,false);
+	}
+}
+
+for(var i=0;i<textAreas.length;i++) {
+	var obj = textAreas[i];		
+	obj.addEventListener("focus",onElementFocus,false);
+	obj.addEventListener("blur",onElementBlur,false);
+}
+
+function onElementFocus() {
+	this.addEventListener("keypress",convertThis,false);	
+}
+
+function onElementBlur() {
+	this.removeEventListener("keypress",convertThis);	
+}
    
 function isEnglish(elem)
 {
@@ -141,48 +174,49 @@ function toggleG(obj)
 		ta['g'] = "\u0B95\u0BCD"
 }
 
-function toggleKBMode(e,obj)
-{
-	if(obj != null)
-	{
-		pkbmode = kbmode;
-		kbmode = obj.value;
-	}
-	else
-	{
-		key = e.keyCode;
-		if(key == 18)
-			hotkey = true;		
-		if (key == 120 && ! hotkey)
-		{
-			if(kbmode != "english")
-			{
-				pkbmode = kbmode;
-				kbmode = "english";				
-			}
-			else
-			{
-				kbmode = pkbmode;
-				pkbmode = "english";
-			}
-		}			
-		if (key == 119 &&  hotkey)
-		{
-				kbmode = pkbmode;
-				pkbmode = "tamil";				
-		}
-		if (key == 120 &&  hotkey)
-		{
-				kbmode = pkbmode;
-				pkbmode = "tamil99";				
-		}
-		if (key == 121 &&  hotkey)
-		{
-				kbmode = pkbmode;
-				pkbmode = "typewriter";				
-		}
+function isHotKeyPressed(e) {
+	key = e.keyCode;
+	if(key == 18)
+		hotkey = !hotkey;	
+}
+
+function toggleKBMode(e)
+{	
+	key = e.keyCode;
+	/*if(key == 18)
+		hotkey = true;*/
 	
-	chrome.extension.sendRequest({text: "setTamilKeySelLang",kbmode: kbmode}, function(response) {	});
+	if (key == 120 && ! hotkey)
+	{
+		if(kbmode != "english")
+		{
+			pkbmode = kbmode;
+			kbmode = "english";				
+		}
+		else
+		{
+			kbmode = pkbmode;
+			pkbmode = "english";
+		}
+	}
+	
+	if (key == 119 &&  hotkey)
+	{
+			kbmode = pkbmode;
+			pkbmode = "tamil";				
+	}
+	if (key == 120 &&  hotkey)
+	{
+			kbmode = pkbmode;
+			pkbmode = "tamil99";				
+	}
+	if (key == 121 &&  hotkey)
+	{
+			kbmode = pkbmode;
+			pkbmode = "typewriter";				
+	}		
+		//chrome.extension.sendRequest({text: "setTamilKeySelLang",kbmode: kbmode}, function(response) {	});
+		localStorage["tamilKeySelLang"] = kbmode;
 	}
 }
 

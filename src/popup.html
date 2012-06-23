@@ -25,18 +25,22 @@
 <script>
 
 function setSelLang(radioButton) {
-  if (window.localStorage == null) {
+  /*if (window.localStorage == null) {
     alert('Local storage is required for changing providers');
     return;
   }
-    window.localStorage.tamilKeySelLang = radioButton.value;
+    window.localStorage.tamilKeySelLang = radioButton.value;*/
+	localStorage["tamilKeySelLang"] = radioButton.value;
 }
 
 function main()
 {
-	if(window.localStorage.tamilKeySelLang == null)
+	/*if(window.localStorage.tamilKeySelLang == null)
 		window.localStorage.tamilKeySelLang = "english"
-	document.getElementById(window.localStorage.tamilKeySelLang).checked = true;
+	document.getElementById(window.localStorage.tamilKeySelLang).checked = true;*/
+	if(!localStorage["tamilKeySelLang"])
+		localStorage["tamilKeySelLang"] = "english"
+	document.getElementById(localStorage["tamilKeySelLang"]).checked = true;
 }
 </script>
 
