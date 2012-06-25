@@ -217,7 +217,7 @@ function toggleKBMode(e)
 	}		
 		//chrome.extension.sendRequest({text: "setTamilKeySelLang",kbmode: kbmode}, function(response) {	});
 		localStorage["tamilKeySelLang"] = kbmode;
-	}
+	
 }
 
 function isSplKey(keynum)
